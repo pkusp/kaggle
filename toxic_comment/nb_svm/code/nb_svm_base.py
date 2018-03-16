@@ -10,7 +10,7 @@ import numpy as np
 import pandas as pd
 from sklearn.linear_model import LogisticRegression
 from sklearn.feature_extraction.text import CountVectorizer,TfidfVectorizer
-import re, string
+import re, string,copy
 
 
 class NbSvm(object):
@@ -18,8 +18,8 @@ class NbSvm(object):
 		self.train = train
 		self.test = test
 	def data_check(self):
-		train = deepcopy(self.train)
-		test = deepcopy(self.test)
+		train = self.train
+		test = self.test
 		print(train.head())
 		print(train['comment_text'][0])
 		lens = train.comment_text.str.len()
@@ -38,7 +38,7 @@ class NbSvm(object):
 		return train_cmt,test_cmt
 	def tokenize(self,s):
 		re_tok = re.compile(f'([{string.punctuation}“”¨«»®´·º½¾¿¡§£₤‘’])')
-		return re_token.sub(r'\1',s).split()
+		return re_tok.sub(r'\1',s).split()
 	def tf_idf(self):
 		train_cmt,test_cmt = self.data_pre()
 		vec = TfidfVectorizer(ngram_range=(1,2),tokenizer=tokenize,
@@ -75,5 +75,7 @@ if __name__ == '__main__':
 	train = pd.read_csv('../../data_raw/train.csv')
 	test = pd.read_csv('../../data_raw/test.csv')
 	subm = pd.read_csv('../../data_raw/sample_submission.csv')
+	print("running...")
 	ns = NbSvm(train,test)
 	ns.data_check()
+	a=ns.tokenize('edra.,.;fg')
